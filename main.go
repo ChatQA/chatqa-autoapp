@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/satori/go.uuid"
 	"log"
 	"net/http"
@@ -13,6 +14,9 @@ import (
 
 func main() {
 	e := echo.New()
+
+	e.Use(middleware.CORS())
+
 	e.GET("/", hello)
 	e.POST("/users", saveUser)
 	e.POST("/buildApp", buildApp)
@@ -96,13 +100,7 @@ go 1.18
 		"cd %s && export GOOS=%s && export GOARCH=%s && go mod tidy && go build",
 		cacheDir, props.OS, props.Arch)
 
-	command := exec.Command("bash", "-lc", cmd) // 命令执行：打印当前工作目录下的PATH环境变量
-
-	// 将当前进程的环境变量复制给子进程
-	//command.Env = os.Environ()
-	//command.Env = append(command.Env, "PATH=/opt/appEnvs/go/1.8/bin:$PATH")
-
-	// 执行命令并获取输出
+	command := exec.Command("bash", "-lc", cmd)
 	output, err := command.CombinedOutput()
 	//output, err := exec.Command("bash", "-lc", cmd).CombinedOutput()
 	if err != nil {
