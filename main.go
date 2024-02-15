@@ -15,7 +15,10 @@ import (
 func main() {
 	e := echo.New()
 
-	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete, http.MethodOptions},
+	}))
 
 	e.GET("/", hello)
 	e.POST("/users", saveUser)
