@@ -109,7 +109,11 @@ go 1.18
 	if err != nil {
 		log.Println("编译失败")
 		log.Println(string(output))
-		return err
+		//return err
+		return c.JSON(http.StatusUnprocessableEntity, BuildAppResult{
+			Success:      false,
+			ErrorMessage: string(output),
+		})
 	}
 	log.Println(string(output))
 
@@ -137,6 +141,11 @@ type BuildAppProps struct {
 	Arch string `json:"arch" xml:"arch" form:"arch" query:"arch"`
 	Bin  string `json:"bin" xml:"bin" form:"bin" query:"bin"`
 	ID   string `json:"id" xml:"id" form:"id" query:"id"`
+}
+
+type BuildAppResult struct {
+	Success      bool   `json:"success" xml:"success" form:"success" query:"success"`
+	ErrorMessage string `json:"errorMessage" xml:"errorMessage" form:"errorMessage" query:"errorMessage"`
 }
 
 func listFilesInDir(dirPath string) ([]string, error) {
